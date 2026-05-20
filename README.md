@@ -13,24 +13,35 @@ This is a simple web-based Library Management System built using PHP, MySQL, HTM
  Features
  
 User Authentication: Secure login and registration system for users and administrators.
+
 Add Books: Allows administrators to add new books with details such as:
+
 •	Book Title
 •	Author Name
 •	Category
 •	ISBN Number
 •	Quantity Available
+
 View Available Books: Displays all books currently available in the library with their details.
+
 Borrow Books: Enables users to borrow books from the library. Borrowed books are automatically tracked in the system.
+
 Return Books: Allows users to return borrowed books and updates the available quantity automatically.
+
 My Borrowed Books: Users can view all books they have currently borrowed.
+
 Edit and Delete Books: Administrators can update book information or remove books from the system.
+
 Modern User Interface: The system includes:
+
 •	Responsive pages
 •	Dashboard layout
 •	Styled tables
 •	Background images
 •	Navigation bar
+
  Prerequisites: Before running the project, make sure you have:
+ 
 •	XAMPP / WAMP / Laragon
 •	PHP 7+
 •	MySQL Server
@@ -39,34 +50,58 @@ Modern User Interface: The system includes:
  Setup and Installation
  
 1️ Install XAMPP
+
 Download and install XAMPP: https://www.apachefriends.org/
+
 2️ Clone the Repository
+
 git clone https://github.com/your-username/library-management-system.git
+
 Or download the ZIP file and extract it.
+
 3️ Move Project Folder
+
 Move the project folder into:
+
 C:/xampp/htdocs/
+
 4️ Start Apache and MySQL
+
 Open the XAMPP Control Panel and start:
+
 •	Apache
 •	MySQL
+
 5️ Create Database
+
 Open phpMyAdmin:
+
 http://localhost:8080/phpmyadmin
+
 Create a database named:
+
 library_db
+
 6️ Import SQL File
+
 Import the provided SQL file located in:
+
 /database/library_db.sql
+
 7️ Configure Database Connection
+
 Open:
 config/db.php
+
 Update the database credentials:
+
 $host = "localhost:8080";
 $user = "root";
 $password = "";
 $database = "library_db";
+
  Running the Application
+ 
 After setup, open your browser and run:
 http://localhost/library-system/
 
@@ -75,10 +110,12 @@ http://localhost/library-system/
  
 Admin Account
 Email:enasatham579@gmail.com
+
 Password: @9Alhamdulillah9
 
 User Account
 Email: saraabdi@gmail.com
+
 Password: 123456789
 
  Database Structure
