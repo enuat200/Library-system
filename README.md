@@ -1,4 +1,4 @@
-Group members
+ Group members
 1.	Dessie Mengahun	 ETS0413/16
 2.	Enas Atham          ETS0473/16
 3.	Ephratah Girma    ETS0480/16
