@@ -4,8 +4,9 @@ FROM php:8.2-apache
 # Enable Apache mod_rewrite (essential for MVC routing)
 RUN a2enmod rewrite
 
-# Install PDO MySQL extension (for database connections)
-RUN docker-php-ext-install pdo pdo_mysql
+# Install MySQL extensions required by the app
+RUN docker-php-ext-install mysqli pdo pdo_mysql \
+    && docker-php-ext-enable mysqli pdo_mysql
 
 # Copy your project files into the container's web directory
 COPY . /var/www/html/
