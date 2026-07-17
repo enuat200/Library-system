@@ -4,43 +4,47 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 session_start();
 
-include "../config/db.php";
+require_once __DIR__ . '/../config/db.php';
 
 $message = "";
 
-if(isset($_POST['login'])){
+if($_SERVER['REQUEST_METHOD'] === 'POST'){
+    $email = trim($_POST['email'] ?? '');
+    $password = trim($_POST['password'] ?? '');
 
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+    if(empty($email) || empty($password)){
+        $message = "Email and password are required.";
+    } elseif(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+        $message = "Please enter a valid email address.";
+    } else {
+        $stmt = $conn->prepare("SELECT id, name, password, role FROM users WHERE email = ?");
+        $stmt->bind_param('s', $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-    $sql = "SELECT * FROM users WHERE email='$email'";
-    $result = $conn->query($sql);
+        if($result && $result->num_rows > 0){
+            $user = $result->fetch_assoc();
 
-    if($result && $result->num_rows > 0){
+            if(password_verify($password, $user['password'])){
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['user_name'] = $user['name'];
+                $_SESSION['role'] = $user['role'];
 
-        $user = $result->fetch_assoc();
+                if($user['role'] === 'admin'){
+                    header("Location: /admin/dashboard.php");
+                } else {
+                    header("Location: /user/dashboard.php");
+                }
 
-        if(password_verify($password, $user['password'])){
-
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_name'] = $user['name'];
-            $_SESSION['role'] = $user['role'];
-
-            // Redirect based on role
-            if(isset($_SESSION['role']) && $_SESSION['role'] === 'admin'){
-                header("Location: ../admin/dashboard.php");
+                exit();
             } else {
-                header("Location: ../user/dashboard.php");
+                $message = "Wrong password!";
             }
-
-            exit();
-
         } else {
-            $message = "Wrong password!";
+            $message = "Email not found!";
         }
 
-    } else {
-        $message = "Email not found!";
+        $stmt->close();
     }
 }
 ?>
@@ -60,12 +64,14 @@ if(isset($_POST['login'])){
     <div class="auth-card">
         <h2>Login</h2>
 
-        <form method="POST">
-            <input type="text" name="email" placeholder="Email">
-            <input type="password" name="password" placeholder="Password">
-            <button type="submit" name="login">
-    Login
-</button>
+        <?php if(!empty($message)): ?>
+            <p class="error"><?php echo htmlspecialchars($message); ?></p>
+        <?php endif; ?>
+
+        <form method="POST" action="/auth/login.php">
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit" name="login">Login</button>
         </form>
 
     </div>
