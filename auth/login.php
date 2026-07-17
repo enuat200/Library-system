@@ -18,33 +18,39 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         $message = "Please enter a valid email address.";
     } else {
         $stmt = $conn->prepare("SELECT id, name, password, role FROM users WHERE email = ?");
-        $stmt->bind_param('s', $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
 
-        if($result && $result->num_rows > 0){
-            $user = $result->fetch_assoc();
-
-            if(password_verify($password, $user['password'])){
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['user_name'] = $user['name'];
-                $_SESSION['role'] = $user['role'];
-
-                if($user['role'] === 'admin'){
-                    header("Location: /admin/dashboard.php");
-                } else {
-                    header("Location: /user/dashboard.php");
-                }
-
-                exit();
-            } else {
-                $message = "Wrong password!";
-            }
+        if(!$stmt){
+            error_log('Login prepare failed: ' . $conn->error);
+            $message = "Database error. Please try again later.";
         } else {
-            $message = "Email not found!";
-        }
+            $stmt->bind_param('s', $email);
+            $stmt->execute();
+            $result = $stmt->get_result();
 
-        $stmt->close();
+            if($result && $result->num_rows > 0){
+                $user = $result->fetch_assoc();
+
+                if(password_verify($password, $user['password'])){
+                    $_SESSION['user_id'] = $user['id'];
+                    $_SESSION['user_name'] = $user['name'];
+                    $_SESSION['role'] = $user['role'];
+
+                    if($user['role'] === 'admin'){
+                        header("Location: /admin/dashboard.php");
+                    } else {
+                        header("Location: /user/dashboard.php");
+                    }
+
+                    exit();
+                } else {
+                    $message = "Wrong password!";
+                }
+            } else {
+                $message = "Email not found!";
+            }
+
+            $stmt->close();
+        }
     }
 }
 ?>
